@@ -1,7 +1,3 @@
-# https://github.com/Infamous-Hydra/YaeMiko
-# https://github.com/Team-ProjectCodeX
-
-
 import json
 import os
 
@@ -33,7 +29,7 @@ class Config(object):
     MONGO_DB_URI = "mongodb+srv://Filestation20:Vikash3108@cluster0.itxaht0.mongodb.net/?retryWrites=true&w=majority"
 
     # Support chat and support ID
-    SUPPORT_CHAT = "-Anime_Station_Bots"
+    SUPPORT_CHAT = "Anime_Station_Bots"
     SUPPORT_ID = -1001881709903
 
     # Database name
