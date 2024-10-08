@@ -22,7 +22,7 @@ class Config(object):
     DATABASE_URL = "postgres://azqpmryu:Uj9aaVwhX6RFCx_QIJQkXEYmkYOJka4t@flora.db.elephantsql.com/azqpmryu"
 
     # Event logs chat ID and message dump chat ID
-    EVENT_LOGS = -1001795806059
+    EVENT_LOGS =  -1002219420074
     MESSAGE_DUMP = -1002219420074
 
     # MongoDB configuration
