@@ -168,7 +168,7 @@ async def unmute_force_subscribe(event):
 
 
 __help__ = """
-➠ *Dazai has the capability to hush members who haven't yet subscribed to your channel until they decide to hit that subscribe button.*
+➠ *Furina has the capability to hush members who haven't yet subscribed to your channel until they decide to hit that subscribe button.*
 ➠ *When activated, I'll silence those who are not subscribed and provide them with an option to unmute. Once they click the button, I'll lift the mute.*
 
 ➠ Configuration Process
