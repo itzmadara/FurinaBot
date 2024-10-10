@@ -5134,7 +5134,7 @@ QUOTES_IMG = [
 __help__ = """
 ⛩ *Anime:*
 
-➠ *Dazai provides you the best anime-based commands including anime news and much more!*
+➠ *Furina provides you the best anime-based commands including anime news and much more!*
 
 ➠ *Commands:*
 
