@@ -30,7 +30,7 @@ class Config(object):
 
     # Support chat and support ID
     SUPPORT_CHAT = "Anime_Station_Bots"
-    SUPPORT_ID = -1001881709903
+    SUPPORT_ID = -1002219420074
 
     # Database name
     DB_NAME = "Filestation20"
