@@ -49,7 +49,7 @@ class Config(object):
     BL_CHATS = []
 
     # User IDs of sudo users, dev users, support users, tiger users, and whitelist users
-    DRAGONS = get_user_list("elevated_users.json", "sudos")
+    DRAGONS = get_user_list("elevated_users.json", "6304277259")
     DEV_USERS = get_user_list("elevated_users.json", "devs")
     DEMONS = get_user_list("elevated_users.json", "supports")
     TIGERS = get_user_list("elevated_users.json", "tigers")
