@@ -19,7 +19,7 @@ class Config(object):
     API_HASH = "3bc4c3c2416c746fb9d613e205e8a320"
 
     # Database configuration (PostgreSQL)
-    DATABASE_URL = "postgres://azqpmryu:Uj9aaVwhX6RFCx_QIJQkXEYmkYOJka4t@flora.db.elephantsql.com/azqpmryu"
+    DATABASE_URL = "postgres://koyeb-adm:hpJjgz42wunQ@ep-holy-wildflower-a2hgcv8r.eu-central-1.pg.koyeb.app/koyebdb"
 
     # Event logs chat ID and message dump chat ID
     EVENT_LOGS =  -1002219420074
