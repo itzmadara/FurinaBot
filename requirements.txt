@@ -61,7 +61,7 @@ pyrate-limiter==3.7.0
 pytz==2024.1
 python-arq==6.0.7
 git+https://github.com/KurimuzonAkuma/pyrogram
-python-telegram-bot==21.8
+python-telegram-bot==21.10
 
 # ==== R ====
 regex==2024.7.24
