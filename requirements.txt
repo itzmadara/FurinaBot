@@ -1,12 +1,12 @@
 # ==== A ====
 aiofiles==24.1.0
-aiohttp==3.9.5
+aiohttp==3.11.12
 APScheduler==3.10.4
 alphabet-detector==0.0.7
 asyncio==3.4.3
 
 # ==== B ====
-beautifulsoup4==4.12.3
+beautifulsoup4==4.13.3
 bleach==6.2.0
 
 # ==== C ====
@@ -15,7 +15,7 @@ cachetools==5.5.0
 cockroachdb
 
 # ==== D ====
-dateparser==1.2.0
+dateparser==1.2.1
 
 # ==== E ====
 emoji==2.14.0
@@ -40,8 +40,8 @@ jikanpy==4.3.2
 lxml==5.3.0
 
 # ==== M ====
-markdown2==2.5.1
-motor==3.6.0
+markdown2==2.5.2
+motor==3.7.0
 
 # ==== N ====
 nekos.py==1.1.0
@@ -56,9 +56,9 @@ psutil==6.1.1
 pyjokes
 psycopg2-binary==2.9.10
 pynewtonmath==1.0.1
-pymongo[srv]==4.9.1
+pymongo[srv]==4.11.0
 pyrate-limiter==3.7.0
-pytz==2024.1
+pytz==2025.1
 python-arq==6.0.7
 git+https://github.com/KurimuzonAkuma/pyrogram
 python-telegram-bot==21.10
