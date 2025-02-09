@@ -5,7 +5,7 @@ from pyrogram import filters
 
 from Database.mongodb.toggle_mongo import is_nsfw_on, nsfw_off, nsfw_on
 from Mikobot import BOT_USERNAME, DRAGONS, app
-from Mikobot.state import arq
+from Mikobot.state import State
 from Mikobot.utils.can_restrict import can_restrict
 from Mikobot.utils.errors import capture_err
 
