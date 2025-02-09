@@ -1,7 +1,7 @@
 # ==== A ====
 aiofiles==24.1.0
 aiohttp==3.11.12
-APScheduler==3.10.4
+APScheduler==3.11.0
 alphabet-detector==0.0.7
 asyncio==3.4.3
 
@@ -26,7 +26,7 @@ ffmpeg-python
 future==1.0.0
 
 # ==== G ====
-gpytranslate==1.5.1
+gpytranslate==2.0.0
 
 # ==== H ====
 html2text==2024.2.26
@@ -60,7 +60,7 @@ pymongo[srv]==4.11.0
 pyrate-limiter==3.7.0
 pytz==2025.1
 python-arq==6.0.7
-git+https://github.com/KurimuzonAkuma/pyrogram
+pyrofork
 python-telegram-bot==21.4
 
 # ==== R ====
