@@ -2,17 +2,26 @@
 from aiohttp import ClientSession
 from httpx import AsyncClient, Timeout
 from Python_ARQ import ARQ
-from Mikobot.state import get_arq  # ✅ Import the function instead
 
 # <=============================================== SETUP ========================================================>
-# Lazy Initialization for Aiohttp Async Client
-_session = None
+class State:
+    _session = None
+    _arq = None
 
-async def get_session():
-    global _session
-    if _session is None:
-        _session = ClientSession()
-    return _session
+    @classmethod
+    async def get_session(cls):
+        """ Lazily initializes and returns an aiohttp ClientSession. """
+        if cls._session is None:
+            cls._session = ClientSession()
+        return cls._session
+
+    @classmethod
+    async def get_arq(cls):
+        """ Lazily initializes and returns an ARQ client. """
+        if cls._arq is None:
+            session = await cls.get_session()
+            cls._arq = ARQ("arq.hamker.dev", "RLWCED-WZASYO-AWOLTB-ITBWTP-ARQ", session)
+        return cls._arq
 
 # HTTPx Async Client
 state = AsyncClient(
@@ -24,13 +33,5 @@ state = AsyncClient(
     },
     timeout=Timeout(20),
 )
-
-# <=============================================== ARQ SETUP ========================================================>
-ARQ_API_KEY = "RLWCED-WZASYO-AWOLTB-ITBWTP-ARQ"  # GET API KEY FROM @ARQRobot
-ARQ_API_URL = "arq.hamker.dev"
-
-async def get_arq():
-    session = await get_session()
-    return ARQ(ARQ_API_URL, ARQ_API_KEY, session)
 
 # <===================================================== END ==================================================>
