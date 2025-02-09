@@ -2,6 +2,7 @@
 from aiohttp import ClientSession
 from httpx import AsyncClient, Timeout
 from Python_ARQ import ARQ
+from Mikobot.state import get_arq  # ✅ Import the function instead
 
 # <=============================================== SETUP ========================================================>
 # Lazy Initialization for Aiohttp Async Client
