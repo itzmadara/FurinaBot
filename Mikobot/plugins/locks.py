@@ -631,9 +631,7 @@ async def list_locks(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await send_message(update.effective_message, res, parse_mode=ParseMode.MARKDOWN)
 
-
 def get_permission_list(current, new):
-    # Define the valid permissions for ChatPermissions
     permissions = {
         "can_send_messages": None,
         "can_send_media_messages": None,
@@ -643,23 +641,12 @@ def get_permission_list(current, new):
         "can_change_info": None,
         "can_invite_users": None,
         "can_pin_messages": None,
+        "can_manage_topics": None,
     }
-
-    # Update with current and new permissions
     permissions.update(current)
     permissions.update(new)
-
-    # Ensure only valid permissions are passed to ChatPermissions
-    valid_permissions = {key: permissions[key] for key in permissions if key in [
-        "can_send_messages", "can_send_media_messages", "can_send_polls", 
-        "can_send_other_messages", "can_add_web_page_previews", "can_change_info", 
-        "can_invite_users", "can_pin_messages"]}
-
-    # Create a new ChatPermissions object with the valid permissions
-    new_permissions = ChatPermissions(**valid_permissions)
-    
+    new_permissions = ChatPermissions(**permissions)
     return new_permissions
-
 
 async def __import_data__(chat_id, data, message):
     # set chat locks
