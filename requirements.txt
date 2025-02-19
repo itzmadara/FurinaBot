@@ -60,7 +60,8 @@ pymongo[srv]==4.11.1
 pyrate-limiter==3.7.0
 pytz==2025.1
 python-arq==6.0.7
-pyrotgfork
+pyrogram
+git+https://github.com/KurimuzonAkuma/pyrogram
 python-telegram-bot==21.4
 
 # ==== R ====
