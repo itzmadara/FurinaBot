@@ -2,7 +2,7 @@
 import random
 import re
 from html import escape
-
+from pyrogram.enums import ParseMode
 from pyrate_limiter import BucketFullException, Duration, InMemoryBucket, Limiter, Rate
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ChatMemberStatus, MessageLimit, ParseMode
