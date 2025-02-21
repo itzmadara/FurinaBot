@@ -2,7 +2,7 @@
 import random
 import re
 from html import escape
-from pyrogram.enums import ParseMode
+
 from pyrate_limiter import BucketFullException, Duration, InMemoryBucket, Limiter, Rate
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ChatMemberStatus, MessageLimit, ParseMode
@@ -492,7 +492,7 @@ async def reply_filter(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                 message_thread_id=(
                                     message.message_thread_id if chat.is_forum else None
                                 ),
-                                has_spoiler=True,
+                                has_spoiler=filters.HAS_MEDIA_SPOILER,
                             )
                     except BadRequest:
                         await send_message(
