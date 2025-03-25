@@ -62,6 +62,7 @@ pytz==2025.2
 python-arq==6.0.7
 pyrogram==2.0.106
 pyrofork==2.3.59
+kurigram==v2.1.39
 python-telegram-bot==22.0
 
 # ==== R ====
