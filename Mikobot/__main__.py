@@ -780,7 +780,6 @@ async def send_settings(chat_id, user_id, user=False):
                 "These are your current settings:" + "\n\n" + settings,
                 parse_mode=ParseMode.MARKDOWN,
             )
-
         else:
             await dispatcher.bot.send_message(
                 user_id,
@@ -789,12 +788,12 @@ async def send_settings(chat_id, user_id, user=False):
             )
     else:
         if CHAT_SETTINGS:
-            chat_name = dispatcher.bot.getChat(chat_id).title
+            # Fix: await the get_chat call
+            chat = await dispatcher.bot.get_chat(chat_id)
+            chat_name = chat.title
             await dispatcher.bot.send_message(
                 user_id,
-                text="Which module would you like to check {}'s settings for?".format(
-                    chat_name
-                ),
+                text=f"Which module would you like to check {chat_name}'s settings for?",
                 reply_markup=InlineKeyboardMarkup(
                     paginate_modules(0, CHAT_SETTINGS, "stngs", chat=chat_id)
                 ),
@@ -807,7 +806,6 @@ async def send_settings(chat_id, user_id, user=False):
                 parse_mode=ParseMode.MARKDOWN,
             )
 
-
 async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     user = update.effective_user
@@ -816,14 +814,25 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     prev_match = re.match(r"stngs_prev\((.+?),(.+?)\)", query.data)
     next_match = re.match(r"stngs_next\((.+?),(.+?)\)", query.data)
     back_match = re.match(r"stngs_back\((.+?)\)", query.data)
+    
     try:
         if mod_match:
             chat_id = mod_match.group(1)
             module = mod_match.group(2)
-            chat = bot.get_chat(chat_id)
-            text = "*{}* has the following settings for the *{}* module:\n\n".format(
-                escape_markdown(chat.title), CHAT_SETTINGS[module].__mod_name__
-            ) + CHAT_SETTINGS[module].__chat_settings__(chat_id, user.id)
+            chat = await bot.get_chat(chat_id)
+            
+            # Get the chat settings - await the coroutine
+            chat_settings = await CHAT_SETTINGS[module].__chat_settings__(chat_id, user.id)
+            
+            text = (
+                "*{}* has the following settings for the *{}* module:\n\n{}"
+                .format(
+                    escape_markdown(chat.title),
+                    CHAT_SETTINGS[module].__mod_name__,
+                    chat_settings
+                )
+            )
+            
             await query.message.reply_text(
                 text=text,
                 parse_mode=ParseMode.MARKDOWN,
@@ -842,7 +851,7 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif prev_match:
             chat_id = prev_match.group(1)
             curr_page = int(prev_match.group(2))
-            chat = bot.get_chat(chat_id)
+            chat = await bot.get_chat(chat_id)
             await query.message.reply_text(
                 "Hi there! There are quite a few settings for {} - go ahead and pick what "
                 "you're interested in.".format(chat.title),
@@ -856,7 +865,7 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif next_match:
             chat_id = next_match.group(1)
             next_page = int(next_match.group(2))
-            chat = bot.get_chat(chat_id)
+            chat = await bot.get_chat(chat_id)
             await query.message.reply_text(
                 "Hi there! There are quite a few settings for {} - go ahead and pick what "
                 "you're interested in.".format(chat.title),
@@ -869,7 +878,7 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         elif back_match:
             chat_id = back_match.group(1)
-            chat = bot.get_chat(chat_id)
+            chat = await bot.get_chat(chat_id)
             await query.message.reply_text(
                 text="Hi there! There are quite a few settings for {} - go ahead and pick what "
                 "you're interested in.".format(escape_markdown(chat.title)),
@@ -880,7 +889,7 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
 
         # ensure no spinny white circle
-        bot.answer_callback_query(query.id)
+        await context.bot.answer_callback_query(query.id)
         await query.message.delete()
     except BadRequest as excp:
         if excp.message not in [
@@ -890,15 +899,13 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]:
             LOGGER.exception("Exception in settings buttons. %s", str(query.data))
 
-
 async def get_settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
 
-    # ONLY send settings in PM
     if chat.type != chat.PRIVATE:
-        if is_user_admin(chat, user.id):
+        if await is_user_admin(chat, user.id):  # Added await here
             text = "Click here to get this chat's settings, as well as yours."
             await msg.reply_text(
                 text,
@@ -907,9 +914,7 @@ async def get_settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         [
                             InlineKeyboardButton(
                                 text="SETTINGS",
-                                url="t.me/{}?start=stngs_{}".format(
-                                    context.bot.username, chat.id
-                                ),
+                                url=f"t.me/{context.bot.username}?start=stngs_{chat.id}",
                             )
                         ]
                     ]
@@ -917,10 +922,7 @@ async def get_settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         else:
             text = "Click here to check your settings."
-
-    else:
-        await send_settings(chat.id, user.id, True)
-
+            await msg.reply_text(text)
 
 async def migrate_chats(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.effective_message  # type: Optional[Message]
