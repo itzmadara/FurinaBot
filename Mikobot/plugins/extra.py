@@ -60,7 +60,7 @@ async def _id(client, message):
 
     # Send sticker and text as a reply
     sticker_id = (
-        "CAACAgUAAxkBAAImWWeRXRJ1otRBiECNBhwJn9yN4hatAALvFgACZFKJVDAz31EuKqTzHgQ"
+        "CAACAgQAAxkBAAJG6mfkHbikpKfugKBATMrtRuODlQxtAAJnFgACK5EhUxPddeZWuqZkHgQ"
     )
     await message.reply_sticker(sticker=sticker_id)
     await message.reply_text(text, disable_web_page_preview=True)
