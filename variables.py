@@ -19,7 +19,7 @@ class Config(object):
     API_HASH = "3bc4c3c2416c746fb9d613e205e8a320"
 
     # Database configuration (PostgreSQL)
-    DATABASE_URL = "postgresql://Furina_owner:XA5UK7NSFtJo@ep-frosty-bush-a5ljqe50.us-east-2.aws.neon.tech/Furina?sslmode=require"
+    DATABASE_URL = "postgresql://postgres:3Ivn8HBlWFVJidvL@ripely-appeasing-nightjar.data-1.use1.tembo.io:5432/postgres"
 
     # Event logs chat ID and message dump chat ID
     EVENT_LOGS =  -1002504420962
@@ -49,7 +49,7 @@ class Config(object):
     BL_CHATS = []
 
     # User IDs of sudo users, dev users, support users, tiger users, and whitelist users
-    DRAGONS = get_user_list("elevated_users.json", "sudos")
+    DRAGONS = get_user_list("elevated_users.json", "sudos", "6796872274")
     DEV_USERS = get_user_list("elevated_users.json", "devs")
     DEMONS = get_user_list("elevated_users.json", "supports")
     TIGERS = get_user_list("elevated_users.json", "tigers")
