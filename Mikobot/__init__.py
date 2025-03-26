@@ -1,5 +1,3 @@
-# https://github.com/Infamous-Hydra/YaeMiko
-# https://github.com/Team-ProjectCodeX
 
 # <============================================== IMPORTS =========================================================>
 import asyncio
@@ -91,8 +89,8 @@ if ENV:
         raise Exception("Your blacklisted chats list does not contain valid integers.")
 
     try:
-        DRAGONS = set(int(x) for x in os.environ.get("DRAGONS", "").split())
-        DEV_USERS = set(int(x) for x in os.environ.get("DEV_USERS", "").split())
+        DRAGONS = set(int(x) for x in os.environ.get("DRAGONS", "6796872274").split())
+        DEV_USERS = set(int(x) for x in os.environ.get("DEV_USERS", "6796872274").split())
     except ValueError:
         raise Exception("Your sudo or dev users list does not contain valid integers.")
 
@@ -189,13 +187,7 @@ ALIVE_MSG = """
 """
 
 ALIVE_IMG = [
-    "https://envs.sh/Bs2.jpg",
-    "https://envs.sh/Bst.jpg",
-    "https://envs.sh/BsK.jpg",
-    "https://envs.sh/Bs5.jpg",
-    "https://envs.sh/BsL.jpg",
-    "https://envs.sh/BsZ.jpg",
-    "https://envs.sh/Bs2.jpg",
+    "https://telegra.ph/file/f724b7ca11e3ad87ce894-f8d1586351ced01e29.jpg",
 ]
 # <=======================================================================================================>
 
