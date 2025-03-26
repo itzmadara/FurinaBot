@@ -225,7 +225,7 @@ async def extra_command_handlered(update: Update, context: ContextTypes.DEFAULT_
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text(
-        "𝙎𝙚𝙡𝙚𝙘𝙩 𝙩𝙝𝙚 [𝙨𝙚𝙘𝙩𝙞𝙤𝙣](https://envs.sh/Bs2.jpg) 𝙩𝙝𝙖𝙩 𝙮𝙤𝙪 𝙬𝙖𝙣𝙩 𝙩𝙤 𝙤𝙥𝙚𝙣",
+        "𝙎𝙚𝙡𝙚𝙘𝙩 𝙩𝙝𝙚 [𝙨𝙚𝙘𝙩𝙞𝙤𝙣](https://telegra.ph/file/ec699b8d507d1a7611067-c1012daccba3ef9dd1.jpg) 𝙩𝙝𝙖𝙩 𝙮𝙤𝙪 𝙬𝙖𝙣𝙩 𝙩𝙤 𝙤𝙥𝙚𝙣",
         reply_markup=reply_markup,
         parse_mode="Markdown",
     )
@@ -270,7 +270,7 @@ async def ai_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text(
-        "🧠 *Here are the options for* [𝗙𝘂𝗿𝗶𝗻𝗮](https://envs.sh/Brf.jpg):",
+        "🧠 *Here are the options for* [𝗥𝗮𝗶𝗱𝗲𝗻](https://telegra.ph/file/ec699b8d507d1a7611067-c1012daccba3ef9dd1.jpg):",
         reply_markup=reply_markup,
         parse_mode="Markdown",
     )
@@ -281,7 +281,7 @@ async def ai_command_callback(update: Update, context: ContextTypes.DEFAULT_TYPE
     if query.data == "ai_command_handler":
         await query.answer()
         await query.message.edit_text(
-            "🧠 *Here are the options for* [𝗙𝘂𝗿𝗶𝗻𝗮](https://envs.sh/Bst.jpg):",
+            "🧠 *Here are the options for* [𝗥𝗮𝗶𝗱𝗲𝗻](https://telegra.ph/file/ec699b8d507d1a7611067-c1012daccba3ef9dd1.jpg):",
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
@@ -306,7 +306,7 @@ async def ai_handler_callback(update: Update, context: ContextTypes.DEFAULT_TYPE
     if query.data == "ai_handler":
         await query.answer()
         await query.message.edit_text(
-            "[𝗔𝗿𝘁𝗶𝗳𝗶𝗰𝗶𝗮𝗹 𝗜𝗻𝘁𝗲𝗹𝗹𝗶𝗴𝗲𝗻𝘁 𝗙𝘂𝗻𝗰𝘁𝗶𝗼𝗻𝘀](https://envs.sh/Brf.jpg):\n\n"
+            "[𝗔𝗿𝘁𝗶𝗳𝗶𝗰𝗶𝗮𝗹 𝗜𝗻𝘁𝗲𝗹𝗹𝗶𝗴𝗲𝗻𝘁 𝗙𝘂𝗻𝗰𝘁𝗶𝗼𝗻𝘀](https://telegra.ph/file/dacfd66d6c9e0a1ad06a0-94386ebc622abe02cb.jpg):\n\n"
             "All Commands:\n"
             "➽ /askgpt <write query>: A chatbot using GPT for responding to user queries.\n\n"
             "➽ /palm <write prompt>: Performs a Palm search using a chatbot.\n\n"
@@ -408,7 +408,7 @@ async def anime_command_callback(update: Update, context: ContextTypes.DEFAULT_T
     if query.data == "anime_command_handler":
         await query.answer()
         await query.message.edit_text(
-            "⛩[𝗔𝗻𝗶𝗺𝗲 𝗨𝗽𝗱𝗮𝘁𝗲𝘀](https://envs.sh/Brf.jpg) :\n\n"
+            "⛩[𝗔𝗻𝗶𝗺𝗲 𝗨𝗽𝗱𝗮𝘁𝗲𝘀](https://telegra.ph/file/dacfd66d6c9e0a1ad06a0-94386ebc622abe02cb.jpg) :\n\n"
             "**╔ /anime: **fetches info on single anime (includes buttons to look up for prequels and sequels)\n"
             "**╠ /character: **fetches info on multiple possible characters related to query\n"
             "**╠ /manga: **fetches info on multiple possible mangas related to query\n"
@@ -431,7 +431,7 @@ async def anime_command_callback(update: Update, context: ContextTypes.DEFAULT_T
                     [
                         InlineKeyboardButton("More Info", url="https://anilist.co/"),
                         InlineKeyboardButton(
-                            "Anime Station", url="https://t.me/AnimeStation2"
+                            "𝙍𝙖𝙞𝙙𝙚𝙣 𝙎𝙪𝙥𝙥𝙤𝙧𝙩", url="https://t.me/raiden_gc"
                         ),
                     ],
                     [
@@ -450,7 +450,7 @@ async def genshin_command_callback(update: Update, context: ContextTypes.DEFAULT
     if query.data == "genshin_command_handler":
         await query.answer()
         await query.message.edit_text(
-            "⛩ [𝗚𝗲𝗻𝘀𝗵𝗶𝗻 𝗜𝗺𝗽𝗮𝗰𝘁](https://envs.sh/Brf.jpg) ⛩\n\n"
+            "⛩ [𝗚𝗲𝗻𝘀𝗵𝗶𝗻 𝗜𝗺𝗽𝗮𝗰𝘁](https://telegra.ph/file/dacfd66d6c9e0a1ad06a0-94386ebc622abe02cb.jpg) ⛩\n\n"
             "*UNDER DEVELOPMENT*",
             reply_markup=InlineKeyboardMarkup(
                 [
