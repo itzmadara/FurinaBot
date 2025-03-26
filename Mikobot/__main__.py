@@ -174,6 +174,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     return
                 # Use context.bot and await the getChat coroutine
                 chat = await context.bot.getChat(match.group(1))
+                # Corrected line: Added 'await' before is_user_admin
                 if await is_user_admin(chat, update.effective_user.id):
                     await send_settings(match.group(1), update.effective_user.id, False)
                 else:
@@ -204,7 +205,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption="<b>I am Alive!</b>\n\n<b>Since​:</b> <code>{}</code>".format(uptime),
             parse_mode=ParseMode.HTML,
         )
-
 
 async def extra_command_handlered(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
