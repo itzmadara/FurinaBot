@@ -149,8 +149,7 @@ async def send_help(chat_id, text, keyboard=None):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
     message = update.effective_message
-    uptime = get_readable_time(time.time() - StartTime)
-    
+    uptime = get_readable_time((time.time() - StartTime))
     if update.effective_chat.type == "private":
         if len(args) >= 1:
             if args[0].lower() == "help":
@@ -166,21 +165,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         [[InlineKeyboardButton(text="◁", callback_data="help_back")]]
                     ),
                 )
+
             elif args[0].lower() == "markdownhelp":
-                await IMPORTED["exᴛʀᴀs"].markdown_help_sender(update)
+                IMPORTED["exᴛʀᴀs"].markdown_help_sender(update)
             elif args[0].lower().startswith("stngs_"):
-                match = re.match(r"stngs_(.*)", args[0].lower())
-                if not match:
-                    return
-                # Use context.bot and await the getChat coroutine
-                chat = await context.bot.getChat(match.group(1))
-                # Corrected line: Added 'await' before is_user_admin
-                if await is_user_admin(chat, update.effective_user.id):
-                    await send_settings(match.group(1), update.effective_user.id, False)
+                match = re.match("stngs_(.*)", args[0].lower())
+                chat = dispatcher.bot.getChat(match.group(1))
+
+                if is_user_admin(chat, update.effective_user.id):
+                    send_settings(match.group(1), update.effective_user.id, False)
                 else:
-                    await send_settings(match.group(1), update.effective_user.id, True)
+                    send_settings(match.group(1), update.effective_user.id, True)
+
             elif args[0][1:].isdigit() and "rules" in IMPORTED:
                 await IMPORTED["rules"].send_rules(update, args[0], from_pm=True)
+
         else:
             first_name = update.effective_user.first_name
             lol = await message.reply_photo(
@@ -191,7 +190,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await asyncio.sleep(0.2)
             guu = await update.effective_message.reply_text("🐾")
             await asyncio.sleep(1.8)
-            await guu.delete()
+            await guu.delete()  # Await this line
             await update.effective_message.reply_text(
                 PM_START_TEXT,
                 reply_markup=InlineKeyboardMarkup(START_BTN),
@@ -202,7 +201,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await message.reply_photo(
             photo=str(choice(START_IMG)),
             reply_markup=InlineKeyboardMarkup(GROUP_START_BTN),
-            caption="<b>I am Alive!</b>\n\n<b>Since​:</b> <code>{}</code>".format(uptime),
+            caption="<b>I am Alive!</b>\n\n<b>Since​:</b> <code>{}</code>".format(
+                uptime
+            ),
             parse_mode=ParseMode.HTML,
         )
 
