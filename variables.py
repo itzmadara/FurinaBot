@@ -26,14 +26,14 @@ class Config(object):
     MESSAGE_DUMP = -1002591554488
 
     # MongoDB configuration
-    MONGO_DB_URI = "mongodb+srv://Filestation20:Vikash3108@cluster0.itxaht0.mongodb.net/?retryWrites=true&w=majority"
+    MONGO_DB_URI = "mongodb+srv://Raiden:Raiden@cluster0.cfkdwji.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
     # Support chat and support ID
     SUPPORT_CHAT = "raiden_gc"
     SUPPORT_ID = -1002674794291
 
     # Database name
-    DB_NAME = "Filestation20"
+    DB_NAME = "Raiden"
 
     # Bot token
     TOKEN = "8185055017:AAEMOZrePAzI1S3N7OiE_toflTNOGPvP7io"  # Get bot token from @BotFather on Telegram
