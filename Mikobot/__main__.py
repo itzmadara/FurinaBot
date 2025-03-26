@@ -814,11 +814,13 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     prev_match = re.match(r"stngs_prev\((.+?),(.+?)\)", query.data)
     next_match = re.match(r"stngs_next\((.+?),(.+?)\)", query.data)
     back_match = re.match(r"stngs_back\((.+?)\)", query.data)
+    
     try:
         if mod_match:
             chat_id = mod_match.group(1)
             module = mod_match.group(2)
-            chat = bot.get_chat(chat_id)
+            # Fix: await the get_chat call
+            chat = await bot.get_chat(chat_id)
             text = "*{}* has the following settings for the *{}* module:\n\n".format(
                 escape_markdown(chat.title), CHAT_SETTINGS[module].__mod_name__
             ) + CHAT_SETTINGS[module].__chat_settings__(chat_id, user.id)
@@ -840,7 +842,8 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif prev_match:
             chat_id = prev_match.group(1)
             curr_page = int(prev_match.group(2))
-            chat = bot.get_chat(chat_id)
+            # Fix: await the get_chat call
+            chat = await bot.get_chat(chat_id)
             await query.message.reply_text(
                 "Hi there! There are quite a few settings for {} - go ahead and pick what "
                 "you're interested in.".format(chat.title),
@@ -854,7 +857,8 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif next_match:
             chat_id = next_match.group(1)
             next_page = int(next_match.group(2))
-            chat = bot.get_chat(chat_id)
+            # Fix: await the get_chat call
+            chat = await bot.get_chat(chat_id)
             await query.message.reply_text(
                 "Hi there! There are quite a few settings for {} - go ahead and pick what "
                 "you're interested in.".format(chat.title),
@@ -867,7 +871,8 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         elif back_match:
             chat_id = back_match.group(1)
-            chat = bot.get_chat(chat_id)
+            # Fix: await the get_chat call
+            chat = await bot.get_chat(chat_id)
             await query.message.reply_text(
                 text="Hi there! There are quite a few settings for {} - go ahead and pick what "
                 "you're interested in.".format(escape_markdown(chat.title)),
@@ -878,7 +883,7 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
 
         # ensure no spinny white circle
-        bot.answer_callback_query(query.id)
+        await context.bot.answer_callback_query(query.id)
         await query.message.delete()
     except BadRequest as excp:
         if excp.message not in [
@@ -887,7 +892,6 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Message can't be deleted",
         ]:
             LOGGER.exception("Exception in settings buttons. %s", str(query.data))
-
 
 async def get_settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update.effective_chat
