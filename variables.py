@@ -22,14 +22,14 @@ class Config(object):
     DATABASE_URL = "postgresql://Furina_owner:XA5UK7NSFtJo@ep-frosty-bush-a5ljqe50.us-east-2.aws.neon.tech/Furina?sslmode=require"
 
     # Event logs chat ID and message dump chat ID
-    EVENT_LOGS =  -1002219420074
-    MESSAGE_DUMP = -1002219420074
+    EVENT_LOGS =  -1002504420962
+    MESSAGE_DUMP = -1002591554488
 
     # MongoDB configuration
     MONGO_DB_URI = "mongodb+srv://Filestation20:Vikash3108@cluster0.itxaht0.mongodb.net/?retryWrites=true&w=majority"
 
     # Support chat and support ID
-    SUPPORT_CHAT = "Anime_Station_Bots"
+    SUPPORT_CHAT = "raiden_gc"
     SUPPORT_ID = -1002674794291
 
     # Database name
