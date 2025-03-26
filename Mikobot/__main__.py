@@ -819,11 +819,20 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if mod_match:
             chat_id = mod_match.group(1)
             module = mod_match.group(2)
-            # Fix: await the get_chat call
             chat = await bot.get_chat(chat_id)
-            text = "*{}* has the following settings for the *{}* module:\n\n".format(
-                escape_markdown(chat.title), CHAT_SETTINGS[module].__mod_name__
-            ) + CHAT_SETTINGS[module].__chat_settings__(chat_id, user.id)
+            
+            # Get the chat settings - await the coroutine
+            chat_settings = await CHAT_SETTINGS[module].__chat_settings__(chat_id, user.id)
+            
+            text = (
+                "*{}* has the following settings for the *{}* module:\n\n{}"
+                .format(
+                    escape_markdown(chat.title),
+                    CHAT_SETTINGS[module].__mod_name__,
+                    chat_settings
+                )
+            )
+            
             await query.message.reply_text(
                 text=text,
                 parse_mode=ParseMode.MARKDOWN,
@@ -842,7 +851,6 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif prev_match:
             chat_id = prev_match.group(1)
             curr_page = int(prev_match.group(2))
-            # Fix: await the get_chat call
             chat = await bot.get_chat(chat_id)
             await query.message.reply_text(
                 "Hi there! There are quite a few settings for {} - go ahead and pick what "
@@ -857,7 +865,6 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif next_match:
             chat_id = next_match.group(1)
             next_page = int(next_match.group(2))
-            # Fix: await the get_chat call
             chat = await bot.get_chat(chat_id)
             await query.message.reply_text(
                 "Hi there! There are quite a few settings for {} - go ahead and pick what "
@@ -871,7 +878,6 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         elif back_match:
             chat_id = back_match.group(1)
-            # Fix: await the get_chat call
             chat = await bot.get_chat(chat_id)
             await query.message.reply_text(
                 text="Hi there! There are quite a few settings for {} - go ahead and pick what "
