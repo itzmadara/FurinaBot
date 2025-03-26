@@ -30,16 +30,16 @@ class Config(object):
 
     # Support chat and support ID
     SUPPORT_CHAT = "Anime_Station_Bots"
-    SUPPORT_ID = -1002219420074
+    SUPPORT_ID = -1002674794291
 
     # Database name
     DB_NAME = "Filestation20"
 
     # Bot token
-    TOKEN = "6637953187:AAHSuCkUJ4JqHj-KggWU0MGnRa0YPDjWanI"  # Get bot token from @BotFather on Telegram
+    TOKEN = "8185055017:AAEMOZrePAzI1S3N7OiE_toflTNOGPvP7io"  # Get bot token from @BotFather on Telegram
 
     # Owner's Telegram user ID (Must be an integer)
-    OWNER_ID = 1645068158
+    OWNER_ID = 6473663036
     # <=======================================================================================================>
 
     # <================================================ OPTIONAL ======================================================>
