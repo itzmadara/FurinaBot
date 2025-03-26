@@ -149,7 +149,8 @@ async def send_help(chat_id, text, keyboard=None):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
     message = update.effective_message
-    uptime = get_readable_time((time.time() - StartTime))
+    uptime = get_readable_time(time.time() - StartTime)
+    
     if update.effective_chat.type == "private":
         if len(args) >= 1:
             if args[0].lower() == "help":
@@ -165,21 +166,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         [[InlineKeyboardButton(text="◁", callback_data="help_back")]]
                     ),
                 )
-
             elif args[0].lower() == "markdownhelp":
-                IMPORTED["exᴛʀᴀs"].markdown_help_sender(update)
+                await IMPORTED["exᴛʀᴀs"].markdown_help_sender(update)
             elif args[0].lower().startswith("stngs_"):
-                match = re.match("stngs_(.*)", args[0].lower())
-                chat = dispatcher.bot.getChat(match.group(1))
-
-                if is_user_admin(chat, update.effective_user.id):
-                    send_settings(match.group(1), update.effective_user.id, False)
+                match = re.match(r"stngs_(.*)", args[0].lower())
+                if not match:
+                    return
+                # Use context.bot and await the getChat coroutine
+                chat = await context.bot.getChat(match.group(1))
+                # Corrected line: Added 'await' before is_user_admin
+                if await is_user_admin(chat, update.effective_user.id):
+                    await send_settings(match.group(1), update.effective_user.id, False)
                 else:
-                    send_settings(match.group(1), update.effective_user.id, True)
-
+                    await send_settings(match.group(1), update.effective_user.id, True)
             elif args[0][1:].isdigit() and "rules" in IMPORTED:
                 await IMPORTED["rules"].send_rules(update, args[0], from_pm=True)
-
         else:
             first_name = update.effective_user.first_name
             lol = await message.reply_photo(
@@ -190,7 +191,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await asyncio.sleep(0.2)
             guu = await update.effective_message.reply_text("🐾")
             await asyncio.sleep(1.8)
-            await guu.delete()  # Await this line
+            await guu.delete()
             await update.effective_message.reply_text(
                 PM_START_TEXT,
                 reply_markup=InlineKeyboardMarkup(START_BTN),
@@ -201,9 +202,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await message.reply_photo(
             photo=str(choice(START_IMG)),
             reply_markup=InlineKeyboardMarkup(GROUP_START_BTN),
-            caption="<b>I am Alive!</b>\n\n<b>Since​:</b> <code>{}</code>".format(
-                uptime
-            ),
+            caption="<b>I am Alive!</b>\n\n<b>Since​:</b> <code>{}</code>".format(uptime),
             parse_mode=ParseMode.HTML,
         )
 
@@ -781,7 +780,6 @@ async def send_settings(chat_id, user_id, user=False):
                 "These are your current settings:" + "\n\n" + settings,
                 parse_mode=ParseMode.MARKDOWN,
             )
-
         else:
             await dispatcher.bot.send_message(
                 user_id,
@@ -790,12 +788,12 @@ async def send_settings(chat_id, user_id, user=False):
             )
     else:
         if CHAT_SETTINGS:
-            chat_name = dispatcher.bot.getChat(chat_id).title
+            # Fix: await the get_chat call
+            chat = await dispatcher.bot.get_chat(chat_id)
+            chat_name = chat.title
             await dispatcher.bot.send_message(
                 user_id,
-                text="Which module would you like to check {}'s settings for?".format(
-                    chat_name
-                ),
+                text=f"Which module would you like to check {chat_name}'s settings for?",
                 reply_markup=InlineKeyboardMarkup(
                     paginate_modules(0, CHAT_SETTINGS, "stngs", chat=chat_id)
                 ),
@@ -807,7 +805,6 @@ async def send_settings(chat_id, user_id, user=False):
                 "in a group chat you're admin in to find its current settings!",
                 parse_mode=ParseMode.MARKDOWN,
             )
-
 
 async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -893,13 +890,12 @@ async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def get_settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
 
-    # ONLY send settings in PM
     if chat.type != chat.PRIVATE:
-        if is_user_admin(chat, user.id):
+        if await is_user_admin(chat, user.id):  # Added await here
             text = "Click here to get this chat's settings, as well as yours."
             await msg.reply_text(
                 text,
@@ -908,9 +904,7 @@ async def get_settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         [
                             InlineKeyboardButton(
                                 text="SETTINGS",
-                                url="t.me/{}?start=stngs_{}".format(
-                                    context.bot.username, chat.id
-                                ),
+                                url=f"t.me/{context.bot.username}?start=stngs_{chat.id}",
                             )
                         ]
                     ]
@@ -918,10 +912,7 @@ async def get_settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         else:
             text = "Click here to check your settings."
-
-    else:
-        await send_settings(chat.id, user.id, True)
-
+            await msg.reply_text(text)
 
 async def migrate_chats(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.effective_message  # type: Optional[Message]
