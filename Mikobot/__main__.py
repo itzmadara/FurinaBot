@@ -225,7 +225,7 @@ async def extra_command_handlered(update: Update, context: ContextTypes.DEFAULT_
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text(
-        "𝙎𝙚𝙡𝙚𝙘𝙩 𝙩𝙝𝙚 [𝙨𝙚𝙘𝙩𝙞𝙤𝙣](https://telegra.ph/file/ec699b8d507d1a7611067-c1012daccba3ef9dd1.jpg) 𝙩𝙝𝙖𝙩 𝙮𝙤𝙪 𝙬𝙖𝙣𝙩 𝙩𝙤 𝙤𝙥𝙚𝙣",
+        "𝙎𝙚𝙡𝙚𝙘𝙩 𝙩𝙝𝙚 [𝙨𝙚𝙘𝙩𝙞𝙤𝙣](https://telegra.ph/file/fddaf2e600b5d35213111-b9f992bf8897c42f27.jpg) 𝙩𝙝𝙖𝙩 𝙮𝙤𝙪 𝙬𝙖𝙣𝙩 𝙩𝙤 𝙤𝙥𝙚𝙣",
         reply_markup=reply_markup,
         parse_mode="Markdown",
     )
@@ -236,7 +236,7 @@ async def extra_command_callback(update: Update, context: ContextTypes.DEFAULT_T
     if query.data == "extra_command_handler":
         await query.answer()  # Use 'await' for asynchronous calls
         await query.message.edit_text(
-            "𝙎𝙚𝙡𝙚𝙘𝙩 𝙩𝙝𝙚 [𝙨𝙚𝙘𝙩𝙞𝙤𝙣](https://envs.sh/Bsh.jpg) 𝙩𝙝𝙖𝙩 𝙮𝙤𝙪 𝙬𝙖𝙣𝙩 𝙩𝙤 𝙤𝙥𝙚𝙣",
+            "𝙎𝙚𝙡𝙚𝙘𝙩 𝙩𝙝𝙚 [𝙨𝙚𝙘𝙩𝙞𝙤𝙣](https://telegra.ph/file/fddaf2e600b5d35213111-b9f992bf8897c42f27.jpg) 𝙩𝙝𝙖𝙩 𝙮𝙤𝙪 𝙬𝙖𝙣𝙩 𝙩𝙤 𝙤𝙥𝙚𝙣",
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
