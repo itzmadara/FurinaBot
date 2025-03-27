@@ -71,7 +71,7 @@ VERIFIED_USER_WAITLIST = {}
 
 
 # <================================================ TEMPLATE WELCOME FUNCTION =======================================================>
-async def circle(pfp, size=(259, 259)):
+async def circle(pfp, size=(200, 200)):
     pfp = pfp.resize(size, Image.ANTIALIAS).convert("RGBA")
     bigsize = (pfp.size[0] * 3, pfp.size[1] * 3)
     mask = Image.new("L", bigsize, 0)
@@ -102,21 +102,31 @@ async def welcomepic(pic, user, chat, user_id):
     background = background.resize(
         (background.size[0], background.size[1]), Image.ANTIALIAS
     )
+    
+    # Medium-sized profile picture (150x150 instead of 200x200)
     pfp = Image.open(pic).convert("RGBA")
-    pfp = await circle(pfp, size=(259, 259))
+    pfp = await circle(pfp, size=(150, 150))
+    
+    # Position pfp more towards the center-left
     pfp_x = 55
-    pfp_y = (background.size[1] - pfp.size[1]) // 2 + 38
+    pfp_y = (background.size[1] - pfp.size[1]) // 2
+    
     draw = ImageDraw.Draw(background)
     font = ImageFont.truetype("Extra/Calistoga-Regular.ttf", 42)
-    text_width, text_height = draw.textsize(f"{user} [{user_id}]", font=font)
-    text_x = 20
-    text_y = background.height - text_height - 20 - 25
-    draw.text((text_x, text_y), f"{user} [{user_id}]", font=font, fill="white")
+    
+    # Calculate text size and position at bottom right
+    text_width, text_height = draw.textsize(f"{user}", font=font)
+    text_x = background.width - text_width - 20  # 20px from right edge
+    text_y = background.height - text_height - 20  # 20px from bottom
+    
+    draw.text((text_x, text_y), f"{user}", font=font, fill="white")
+    
+    # Paste the profile picture
     background.paste(pfp, (pfp_x, pfp_y), pfp)
+    
     welcome_image_path = f"downloads/welcome_{user_id}.png"
     background.save(welcome_image_path)
     return welcome_image_path
-
 
 @app.on_chat_member_updated(ft.group)
 async def member_has_joined(client, member: ChatMemberUpdated):
