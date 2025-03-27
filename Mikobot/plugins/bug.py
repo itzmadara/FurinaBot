@@ -2,7 +2,7 @@ from pyrogram import filters
 from pyrogram.enums import ParseMode
 
 # Chat IDs where bug reports should be sent
-BUG_REPORT_CHAT_IDS = [-1001989832800, -1001823656633]
+BUG_REPORT_CHAT_IDS = [-1002538447784]
 
 from Mikobot import app
 
