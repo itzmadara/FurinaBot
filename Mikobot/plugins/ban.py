@@ -328,7 +328,7 @@ async def kick(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
         )
         await bot.sendMessage(
             chat.id,
-            f"Capitain I have kicked {mention_html(member.user.id, html.escape(member.user.first_name)}.",
+            f"Capitain I have kicked {mention_html(member.user.id, html.escape(member.user.first_name)}",
             parse_mode=ParseMode.HTML,
             message_thread_id=message.message_thread_id if chat.is_forum else None,
         )
