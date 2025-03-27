@@ -1,11 +1,3 @@
-# SOURCE https://github.com/Team-ProjectCodeX
-# CREATED BY https://t.me/O_okarma
-# PROVIDED BY https://t.me/ProjectCodeX
-# ➥ @MIKO_V2BOT ʏᴏᴜʀ ᴍᴇssᴀɢᴇ @ᴜsᴇʀɴᴀᴍᴇ
-# ➥ @MIKO_V2BOT @ᴜsᴇʀɴᴀᴍᴇ ʏᴏᴜʀ ᴍᴇssᴀɢᴇ
-
-# TURN ON INLINE MODE FOR USE.
-
 # <============================================== IMPORTS =========================================================>
 import shortuuid
 from pymongo import MongoClient
@@ -174,8 +166,8 @@ __help__ = """
 
 ➠ *Commands:*
 
-» @Furina_Waifu_bot your message @username
-» @Furina_Waifu_bot @username your message
+» @Raiden_xprobot your message @username
+» @Raiden_xprobot @username your message
 """
 
 __mod_name__ = "WHISPER-MSG"
