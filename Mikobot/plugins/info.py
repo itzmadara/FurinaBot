@@ -120,7 +120,7 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
             head += "\n\n👑 <b>The disaster level of this person is My Owner.</b>"
             disaster_level_present = True
         elif chat_obj.id in DEV_USERS:
-            head += "\n\n🐉 <b>This user is a member of Infamous Hydra.</b>"
+            head += "\n\n🐉 <b>Unknown.</b>"
             disaster_level_present = True
         elif chat_obj.id in DRAGONS:
             head += "\n\n🐲 <b>The disaster level of this person is Dragon.</b>"
