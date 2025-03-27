@@ -29,34 +29,49 @@ async def envs_upload(client, message):
         )
         end = datetime.now()
         ms = (end - start).seconds
-        h = await message.reply_text(f"Downloaded in {ms} seconds. Uploading to envs.sh...")
+        h = await message.reply_text(f"Downloaded in {ms} seconds. Uploading to Telegra.ph...")
 
         # Convert WebP to PNG if needed
         if downloaded_file_name.endswith(".webp"):
             resize_image(downloaded_file_name)
 
         try:
-            with open(downloaded_file_name, "rb") as file:
-                response = requests.post(
-                    "https://envs.sh",
-                    files={"file": file}
-                )
-            
-            if response.status_code == 200:
-                file_url = response.text.strip()
+            # Upload to Telegra.ph
+            file_url = await upload_to_telegraph(downloaded_file_name)
+
+            if file_url:
                 await h.edit_text(
-                    f"**✅ Uploaded to [envs.sh]({file_url})**\n"
+                    f"**✅ Uploaded to [Telegra.ph]({file_url})**\n"
                     f"**🔗 Direct Link:** `{file_url}`",
                     disable_web_page_preview=False
                 )
             else:
-                await h.edit_text(f"❌ Error: {response.text}")
+                await h.edit_text("❌ Failed to upload to Telegra.ph.")
         except Exception as e:
-            await h.edit_text(f"❌ Failed to upload: {str(e)}")
+            await h.edit_text(f"❌ Error: {str(e)}")
         finally:
             os.remove(downloaded_file_name)
     else:
-        await message.reply_text("Reply to a file to upload it to envs.sh.")
+        await message.reply_text("Reply to a file to upload it to Telegra.ph.")
+
+
+async def upload_to_telegraph(file_path):
+    try:
+        # Upload file to telegra.ph
+        with open(file_path, "rb") as file:
+            response = requests.post(
+                "https://telegra.ph/upload",
+                files={"file": file}
+            )
+
+        if response.status_code == 200:
+            result = response.json()
+            if isinstance(result, list) and 'src' in result[0]:
+                return f"https://telegra.ph{result[0]['src']}"
+        return None
+    except Exception as e:
+        print(f"Telegra.ph Upload Error: {e}")
+        return None
 
 def resize_image(image):
     im = Image.open(image)
@@ -64,8 +79,8 @@ def resize_image(image):
 
 # <=================================================== HELP ====================================================>
 __help__ = """ 
-➠ **ENVS.SH UPLOAD**:
-» `/envs`, `/envsh`, `/envshare` - Upload a file to envs.sh (Telegraph alternative)
+➠ **TELEGRA.PH UPLOAD**:
+» `/envs`, `/envsh`, `/envshare` - Upload a file to Telegra.ph (Image Upload Service)
 """
-__mod_name__ = "ENVS.SH"
+__mod_name__ = "TELEGRA.PH"
 # <================================================ END =======================================================>
