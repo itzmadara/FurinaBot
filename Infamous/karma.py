@@ -6,13 +6,13 @@ from Mikobot import BOT_USERNAME, OWNER_ID, SUPPORT_CHAT
 
 # <============================================== CONSTANTS =========================================================>
 START_IMG = [
-    "https://telegra.ph/file/f426d88230795d1fdf3a1-e6ceb7628d7c82c236.jpg",
-    "https://telegra.ph/file/2c9896c728b9475fe075f-bd65e022804aa17787.jpg",
-    "https://telegra.ph/file/f00924ffe442b1a288c17-b47ded1a63ebeb1fa2.jpg",
-    "https://telegra.ph/file/7a44dfd5e4ca52b2ff578-bdeef004789e9c96cd.jpg",
-    "https://telegra.ph/file/d1cd41d4352c6b4f5b459-4dc463d3ace2e0baa9.jpg",
-    "https://telegra.ph/file/c0f46801453fd1cb7e89f-6f56d5117f3c70fb63.jpg",
-    "https://telegra.ph/file/1624216d188b2ef68f5ed-da54abf587fd4eb8a1.jpg",
+    "https://telegra.ph/file/1b90f5a97abd259ff90d7-bf5915ad61711c0bf1.jpg",
+    "https://telegra.ph/file/97a45a0f204821b758676-5115862a68714376e3.jpg",
+    "https://telegra.ph/file/f0cb5e32b65e517002fb9-2346f210cc0ce1ca32.jpg",
+    "https://telegra.ph/file/f392b911407a738d3ba99-46a710b5ae05477eeb.jpg",
+    "https://telegra.ph/file/b96cb69cf364b3c5c5638-c9f36de5df917ae38a.jpg",
+    "https://telegra.ph/file/da3b0fe110c6cee663b57-eb6e3ad0e68f21e054.jpg",
+    "https://telegra.ph/file/b40a58989d456234c827b-52bd898870fc0d49ee.jpg",
 ]
 
 HEY_IMG = "https://telegra.ph/file/ec699b8d507d1a7611067-c1012daccba3ef9dd1.jpg"
@@ -72,7 +72,7 @@ ALIVE_BTN = [
 ]
 
 HELP_STRINGS = """
-🫧 *ʀᴀɪᴅᴇɴ* 🫧 [ㅤ](https://telegra.ph/file/d1cd41d4352c6b4f5b459-4dc463d3ace2e0baa9.jpg)
+🫧 *ʀᴀɪᴅᴇɴ* 🫧 [ㅤ](https://telegra.ph/file/d0a9888e9ecc025550d59-8b8f77f6642294a148.jpg)
 
 ☉ *Here, you will find a list of all the available commands.*
 
