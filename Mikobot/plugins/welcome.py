@@ -101,18 +101,18 @@ async def welcomepic(pic, user, chat, user_id):
     background = Image.open("Extra/bgg.jpg")
     background = background.resize((background.size[0], background.size[1]), Image.ANTIALIAS)
     
-    # Medium-sized profile picture (150x150)
+    # Profile picture (150x150 circle)
     pfp = Image.open(pic).convert("RGBA")
     pfp = await circle(pfp, size=(150, 150))
     
-    # Position pfp slightly up and left (adjust these values as needed)
-    pfp_x = 35  # Original: 55 | Now: 35 (20px left)
-    pfp_y = (background.size[1] - pfp.size[1]) // 2 - 20  # Original: centered | Now: 20px up
+    # Position pfp in top-left corner with 20px margin
+    pfp_x = 20  # 20px from left
+    pfp_y = 20  # 20px from top
     
     draw = ImageDraw.Draw(background)
     font = ImageFont.truetype("Extra/Calistoga-Regular.ttf", 42)
     
-    # Username at bottom-right
+    # Username at bottom-right (with 20px margin)
     text_width, text_height = draw.textsize(f"{user}", font=font)
     text_x = background.width - text_width - 20  # 20px from right
     text_y = background.height - text_height - 20  # 20px from bottom
