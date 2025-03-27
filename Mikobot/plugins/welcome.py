@@ -99,29 +99,25 @@ async def draw_multiple_line_text(image, text, font, text_start_height):
 async def welcomepic(pic, user, chat, user_id):
     user = unidecode.unidecode(user)
     background = Image.open("Extra/bgg.jpg")
-    background = background.resize(
-        (background.size[0], background.size[1]), Image.ANTIALIAS
-    )
+    background = background.resize((background.size[0], background.size[1]), Image.ANTIALIAS)
     
-    # Medium-sized profile picture (150x150 instead of 200x200)
+    # Medium-sized profile picture (150x150)
     pfp = Image.open(pic).convert("RGBA")
     pfp = await circle(pfp, size=(150, 150))
     
-    # Position pfp more towards the center-left
-    pfp_x = 55
-    pfp_y = (background.size[1] - pfp.size[1]) // 2
+    # Position pfp slightly up and left (adjust these values as needed)
+    pfp_x = 55 - 20  # Original: 55 | Now: 35 (20px left)
+    pfp_y = (background.size[1] - pfp.size[1]) // 2 - 20  # Original: centered | Now: 20px up
     
     draw = ImageDraw.Draw(background)
     font = ImageFont.truetype("Extra/Calistoga-Regular.ttf", 42)
     
-    # Calculate text size and position at bottom right
+    # Username at bottom-right
     text_width, text_height = draw.textsize(f"{user}", font=font)
-    text_x = background.width - text_width - 20  # 20px from right edge
+    text_x = background.width - text_width - 20  # 20px from right
     text_y = background.height - text_height - 20  # 20px from bottom
     
     draw.text((text_x, text_y), f"{user}", font=font, fill="white")
-    
-    # Paste the profile picture
     background.paste(pfp, (pfp_x, pfp_y), pfp)
     
     welcome_image_path = f"downloads/welcome_{user_id}.png"
