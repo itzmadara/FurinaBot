@@ -106,7 +106,7 @@ async def welcomepic(pic, user, chat, user_id):
     pfp = await circle(pfp, size=(150, 150))
     
     # Position pfp slightly up and left (adjust these values as needed)
-    pfp_x = 55 - 20  # Original: 55 | Now: 35 (20px left)
+    pfp_x = 35  # Original: 55 | Now: 35 (20px left)
     pfp_y = (background.size[1] - pfp.size[1]) // 2 - 20  # Original: centered | Now: 20px up
     
     draw = ImageDraw.Draw(background)
