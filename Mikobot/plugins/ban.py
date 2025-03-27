@@ -305,9 +305,9 @@ async def kick(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     except BadRequest as excp:
         if excp.message != "User not found":
             raise
-
         await message.reply_text("I can't seem to find this user.")
         return log_message
+
     if user_id == bot.id:
         await message.reply_text("Yeahhh I'm not gonna do that.")
         return log_message
@@ -316,16 +316,19 @@ async def kick(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
         await message.reply_text("I really wish I could kick this user....")
         return log_message
 
-    res = chat.unban_member(user_id)  # unban on current user = kick
-    if res:
+    try:
+        # Corrected kick logic: Ban then immediately unban
+        await chat.ban_member(user_id)
+        await chat.unban_member(user_id)
+        
         await bot.send_sticker(
             chat.id,
             BAN_STICKER,
             message_thread_id=message.message_thread_id if chat.is_forum else None,
-        )  # banhammer marie sticker
+        )
         await bot.sendMessage(
             chat.id,
-            f"Capitain I have kicked, {mention_html(member.user.id, html.escape(member.user.first_name))}.",
+            f"Capitain I have kicked {mention_html(member.user.id, html.escape(member.user.first_name)}.",
             parse_mode=ParseMode.HTML,
             message_thread_id=message.message_thread_id if chat.is_forum else None,
         )
@@ -337,14 +340,13 @@ async def kick(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
         )
         if reason:
             log += f"\n<b>Reason:</b> {reason}"
-
         return log
 
-    else:
-        await message.reply_text("Well damn, I can't kick that user.")
+    except BadRequest as excp:
+        await message.reply_text(f"Failed to kick: {excp.message}")
+        LOGGER.error("Error kicking user %s: %s", user_id, excp.message)
 
     return log_message
-
 
 @check_admin(permission="can_restrict_members", is_bot=True)
 async def kickme(update: Update, context: ContextTypes.DEFAULT_TYPE):
