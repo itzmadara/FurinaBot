@@ -1,5 +1,5 @@
 from time import gmtime, strftime, time
-from pyrogram import filters
+from pyrogram import filters, Client
 from pyrogram.types import Message
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes
