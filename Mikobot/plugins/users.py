@@ -143,47 +143,59 @@ async def get_user_id(username: str) -> Union[int, None]:
 async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     to_send = update.effective_message.text.split(None, 1)
 
-    if len(to_send) >= 2:
-        to_group = False
-        to_user = False
-        if to_send[0] == "/broadcastgroups":
-            to_group = True
-        if to_send[0] == "/broadcastusers":
-            to_user = True
-        else:
-            to_group = to_user = True
-        chats = sql.get_all_chats() or []
-        users = get_all_users()
-        failed = 0
-        failed_user = 0
-        if to_group:
-            for chat in chats:
-                try:
-                    await context.bot.sendMessage(
-                        int(chat.chat_id),
-                        escape_markdown(to_send[1], 2),
-                        parse_mode=ParseMode.MARKDOWN_V2,
-                        disable_web_page_preview=True,
-                    )
-                    await asyncio.sleep(1)
-                except TelegramError:
-                    failed += 1
-        if to_user:
-            for user in users:
-                try:
-                    await context.bot.sendMessage(
-                        int(user.user_id),
-                        escape_markdown(to_send[1], 2),
-                        parse_mode=ParseMode.MARKDOWN_V2,
-                        disable_web_page_preview=True,
-                    )
-                    await asyncio.sleep(1)
-                except TelegramError:
-                    failed_user += 1
-        await update.effective_message.reply_text(
-            f"Broadcast complete.\nGroups failed: {failed}.\nUsers failed: {failed_user}.",
-        )
+    if len(to_send) < 2:
+        await update.effective_message.reply_text("Usage: /command <message>")
+        return
 
+    command = to_send[0]
+    message_text = to_send[1]
+
+    to_group = False
+    to_user = False
+
+    if command == "/broadcastgroups":
+        to_group = True
+    elif command == "/broadcastusers":
+        to_user = True
+    elif command == "/broadcastall":
+        to_group = to_user = True
+
+    chats = sql.get_all_chats() or []
+    users = get_all_users()
+    failed_groups = 0
+    failed_users = 0
+
+    if to_group:
+        for chat in chats:
+            try:
+                await context.bot.send_message(
+                    chat_id=int(chat.chat_id),
+                    text=escape_markdown(message_text, 2),
+                    parse_mode=ParseMode.MARKDOWN_V2,
+                    disable_web_page_preview=True
+                )
+                await asyncio.sleep(0.5)
+            except TelegramError:
+                failed_groups += 1
+
+    if to_user:
+        for user in users:
+            try:
+                await context.bot.send_message(
+                    chat_id=int(user.user_id),
+                    text=escape_markdown(message_text, 2),
+                    parse_mode=ParseMode.MARKDOWN_V2,
+                    disable_web_page_preview=True
+                )
+                await asyncio.sleep(0.5)
+            except TelegramError:
+                failed_users += 1
+
+    await update.effective_message.reply_text(
+        f"Broadcast complete!\n"
+        f"Failed groups: {failed_groups}\n"
+        f"Failed users: {failed_users}"
+    )
 
 async def log_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update.effective_chat
