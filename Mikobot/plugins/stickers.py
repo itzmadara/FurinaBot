@@ -401,6 +401,10 @@ async def handler(client, message):
         await message.reply("Provide some text please.")
         return
 
+    file = None
+    meme = None
+    msg = None
+    
     try:
         file = await client.download_media(reply_message)
         if not file:
@@ -425,14 +429,18 @@ async def handler(client, message):
         await msg.delete()
         
     except Exception as e:
-        await msg.edit(f"Error: {str(e)}")
+        if msg:
+            await msg.edit(f"Error: {str(e)}")
+        else:
+            await message.reply(f"Error: {str(e)}")
     finally:
-        for f in [file, meme]:
+        # Clean up files if they exist
+        for f in [f for f in [file, meme] if f is not None]:
             try:
-                if f and os.path.exists(f):
+                if os.path.exists(f):
                     os.remove(f)
-            except:
-                pass
+            except Exception as e:
+                print(f"Error deleting file {f}: {e}")
 
 
 async def draw_text(image_path, text):
