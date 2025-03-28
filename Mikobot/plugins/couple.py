@@ -1,9 +1,7 @@
 # <============================================== IMPORTS =========================================================>
 import random
 from datetime import datetime
-
 from pyrogram import filters
-
 from Database.mongodb.karma_mongo import get_couple, save_couple
 from Mikobot import app
 
@@ -50,6 +48,7 @@ C = """
 ┊ 𝗰𝗵𝗼𝘀𝗲𝗻 𝗮𝘁 12AM {}
 ╰───•➢♡
 """
+
 CAP = """
 •➵💞࿐ 𝐇𝐚𝐩𝐩𝐲 𝐜𝐨𝐮𝐩𝐥𝐞 𝐨𝐟 𝐭𝐡𝐞 𝐝𝐚𝐲
 ╭──────────────
@@ -61,77 +60,95 @@ CAP = """
 ╰───•➢♡
 """
 
-CAP2 = """
-•➵💞࿐ 𝐇𝐚𝐩𝐩𝐲 𝐜𝐨𝐮𝐩𝐥𝐞 𝐨𝐟 𝐭𝐡𝐞 𝐝𝐚𝐲
-╭──────────────
-┊{} (tg://openmessage?user_id={}) + {} (tg://openmessage?user_id={}) = 💞\n
-╰───•➢♡
-╭──────────────
-┊•➢ 𝗡𝗲𝘄 𝗰𝗼𝘂𝗽𝗹𝗲 𝗼𝗳 𝘁𝗵𝗲 𝗱𝗮𝘆 𝗺𝗮𝘆𝗯𝗲
-┊ 𝗰𝗵𝗼𝘀𝗲𝗻 𝗮𝘁 12AM {}
-╰───•➢♡
-"""
+# <============================================ Helper Functions ===============================================>
+async def is_valid_user(bot, user_id):
+    try:
+        user = await bot.get_users(user_id)
+        return user is not None
+    except Exception:
+        return False
 
+async def get_valid_user(bot, user_id, chat_id):
+    try:
+        member = await bot.get_chat_member(chat_id, user_id)
+        return member.user if member else None
+    except Exception:
+        return None
 
+# <============================================ Command Handler ===============================================>
 @app.on_message(filters.command(["couple", "couples", "shipping"]) & ~filters.private)
 async def nibba_nibbi(_, message):
-    COUPLES_PIC = random.choice(ADDITIONAL_IMAGES)  # Move inside the command function
-    if message.from_user.id == 5540249238:
-        my_ = await _.get_users("rfxtuv")
-        me = await _.get_users(5540249238)
-        await message.reply_photo(
-            photo=COUPLES_PIC, caption=C.format(me.mention, tomorrow)
-        )
-    else:
-        try:
+    try:
+        # Ensure the bot has permissions
+        permissions = await _.get_chat_member(message.chat.id, _.me.id)
+        if not permissions.can_get_chat_members:
+            return await message.reply_text("I need permission to get chat members.")
+        
+        COUPLES_PIC = random.choice(ADDITIONAL_IMAGES)
+        if message.from_user.id == 5540249238:
+            me = await _.get_users(5540249238)
+            await message.reply_photo(photo=COUPLES_PIC, caption=C.format(me.mention, tomorrow))
+        else:
             chat_id = message.chat.id
             is_selected = await get_couple(chat_id, today)
+            
             if not is_selected:
+                # Select random users
                 list_of_users = []
-                async for i in _.get_chat_members(message.chat.id, limit=50):
+                async for i in _.get_chat_members(chat_id, limit=50):
                     if not i.user.is_bot:
                         list_of_users.append(i.user.id)
+
                 if len(list_of_users) < 2:
                     return await message.reply_text("Not enough users in the group.")
-                c1_id = random.choice(list_of_users)
-                c2_id = random.choice(list_of_users)
-                while c1_id == c2_id:
-                    c1_id = random.choice(list_of_users)
-                c1_mention = (await _.get_users(c1_id)).mention
-                c2_mention = (await _.get_users(c2_id)).mention
+                
+                c1_id, c2_id = random.sample(list_of_users, 2)
+                
+                # Validate users
+                c1_user = await get_valid_user(_, c1_id, chat_id)
+                c2_user = await get_valid_user(_, c2_id, chat_id)
+
+                if not c1_user or not c2_user:
+                    return await message.reply_text("Error: Unable to fetch one or both users. Ensure they are valid.")
+
+                c1_mention = c1_user.mention
+                c2_mention = c2_user.mention
+
                 await _.send_photo(
-                    message.chat.id,
+                    chat_id,
                     photo=COUPLES_PIC,
                     caption=CAP.format(c1_mention, c2_mention, tomorrow),
                 )
 
                 couple = {"c1_id": c1_id, "c2_id": c2_id}
                 await save_couple(chat_id, today, couple)
-
-            elif is_selected:
+            else:
+                # Fetch previously selected couple
                 c1_id = int(is_selected["c1_id"])
                 c2_id = int(is_selected["c2_id"])
 
-                c1_name = (await _.get_users(c1_id)).first_name
-                c2_name = (await _.get_users(c2_id)).first_name
-                print(c1_id, c2_id, c1_name, c2_name)
+                c1_user = await get_valid_user(_, c1_id, chat_id)
+                c2_user = await get_valid_user(_, c2_id, chat_id)
+
+                if not c1_user or not c2_user:
+                    return await message.reply_text("Error: Unable to fetch one or both users. They might have left the chat.")
+
                 couple_selection_message = f"""•➵💞࿐ 𝐇𝐚𝐩𝐩𝐲 𝐜𝐨𝐮𝐩𝐥𝐞 𝐨𝐟 𝐭𝐡𝐞 𝐝𝐚𝐲
 ╭──────────────
-┊•➢ [{c1_name}](tg://openmessage?user_id={c1_id}) + [{c2_name}](tg://openmessage?user_id={c2_id}) = 💞
+┊•➢ [{c1_user.first_name}](tg://openmessage?user_id={c1_id}) + [{c2_user.first_name}](tg://openmessage?user_id={c2_id}) = 💞
 ╰───•➢♡
 ╭──────────────
 ┊•➢ 𝗡𝗲𝘄 𝗰𝗼𝘂𝗽𝗹𝗲 𝗼𝗳 𝘁𝗵𝗲 𝗱𝗮𝘆 𝗺𝗮𝘆𝗯𝗲
 ┊ 𝗰𝗵𝗼𝘀𝗲𝗻 𝗮𝘁 12AM {tomorrow}
 ╰───•➢♡"""
-                await _.send_photo(
-                    message.chat.id, photo=COUPLES_PIC, caption=couple_selection_message
-                )
-        except Exception as e:
-            print(e)
-            await message.reply_text(str(e))
+                await _.send_photo(chat_id, photo=COUPLES_PIC, caption=couple_selection_message)
+
+    except Exception as e:
+        print(e)
+        await message.reply_text(f"An error occurred: {e}")
 
 
-# <=================================================== HELP ====================================================>
+# <============================================ Help Section ===============================================>
 __help__ = """
 💘 *Choose couples in your chat*
 
