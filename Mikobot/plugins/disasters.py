@@ -21,6 +21,9 @@ DISASTER_LEVELS = {
     "Tiger": "TIGERS",
 }
 
+# Lowercase version for flexible matching
+DISASTER_LEVELS_LOWER = {k.lower(): k for k in DISASTER_LEVELS}
+
 # Load existing data or create new structure
 try:
     with open(ELEVATED_USERS_FILE, "r") as f:
@@ -50,6 +53,14 @@ async def add_disaster_level(update: Update, level: str, context: ContextTypes.D
     bot = context.bot
     args = context.args
     
+    # Convert level to lowercase for flexible matching
+    level = level.strip().lower()
+    actual_level = DISASTER_LEVELS_LOWER.get(level)
+
+    if not actual_level:
+        await message.reply_text("Invalid disaster level!")
+        return ""
+
     try:
         user_id = await extract_user(message, context, args)
         if not user_id:
@@ -66,12 +77,6 @@ async def add_disaster_level(update: Update, level: str, context: ContextTypes.D
         await message.reply_text(error)
         return ""
 
-    # Get proper disaster level key
-    level_key = DISASTER_LEVELS.get(level)
-    if not level_key:
-        await message.reply_text("Invalid disaster level!")
-        return ""
-
     rt = ""
     current_level = None
 
@@ -82,15 +87,15 @@ async def add_disaster_level(update: Update, level: str, context: ContextTypes.D
             break
 
     if current_level:
-        if current_level == level:
-            await message.reply_text(f"This user is already a {level} Disaster!")
+        if current_level == actual_level:
+            await message.reply_text(f"This user is already a {actual_level} Disaster!")
             return ""
         DISASTER_LEVELS[current_level].remove(user_id)
         rt += f"Demoted {user_member.first_name} from {current_level} "
 
     # Add to new level
-    DISASTER_LEVELS[level].append(user_id)
-    rt += f"\nPromoted {user_member.first_name} to {level} Disaster!"
+    DISASTER_LEVELS[actual_level].append(user_id)
+    rt += f"\nPromoted {user_member.first_name} to {actual_level} Disaster!"
 
     # Update storage
     await update_elevated_users()
@@ -100,9 +105,9 @@ async def add_disaster_level(update: Update, level: str, context: ContextTypes.D
 
     # Log action
     log_message = (
-        f"<b>{html.escape(chat.title)}:</b>\n" if message.chat.type != "private" else ""
+        f"<b>{html.escape(message.chat.title)}:</b>\n" if message.chat.type != "private" else ""
     ) + (
-        f"#{level.upper()}\n"
+        f"#{actual_level.upper()}\n"
         f"<b>Admin:</b> {html.escape(user.first_name)}\n"
         f"<b>User:</b> {html.escape(user_member.first_name)}"
     )
