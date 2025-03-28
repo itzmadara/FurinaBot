@@ -272,9 +272,9 @@ def __migrate__(old_chat_id, new_chat_id):
 
 
 # <================================================ HANDLER =======================================================>
-# BROADCAST_HANDLER = CommandHandler(
-# ["broadcastall", "broadcastusers", "broadcastgroups"], broadcast, block=False
-# )
+BROADCAST_HANDLER = CommandHandler(
+    ["broadcastall", "broadcastusers", "broadcastgroups"], broadcast, block=False
+)
 USER_HANDLER = MessageHandler(
     filters.ALL & filters.ChatType.GROUPS, log_user, block=False
 )
@@ -284,7 +284,7 @@ CHAT_CHECKER_HANDLER = MessageHandler(
 CHATLIST_HANDLER = CommandHandler("groups", chats, block=False)
 
 function(USER_HANDLER, USERS_GROUP)
-# function(BROADCAST_HANDLER)
+function(BROADCAST_HANDLER)
 function(CHATLIST_HANDLER)
 function(CHAT_CHECKER_HANDLER, CHAT_GROUP)
 
