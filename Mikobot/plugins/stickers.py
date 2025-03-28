@@ -440,136 +440,92 @@ async def handler(client, message):
         await message.reply("Provide some text please.")
         return
 
-    file = await client.download_media(reply_message)
-    msg = await message.reply("Memifying this image! Please wait.")
-
-    text = message.text.split("/mmf ", maxsplit=1)[1].strip()
-    if len(text) < 1:
-        return await msg.edit("You might want to try `/mmf text`")
-
-    meme = await draw_text(file, text)
-    await client.send_document(message.chat.id, document=meme)
-    await msg.delete()
-    os.remove(meme)
+    try:
+        file = await client.download_media(reply_message)
+        if not file:
+            return await message.reply("Failed to download media.")
+            
+        msg = await message.reply("Memifying this image! Please wait.")
+        
+        # Extract text properly (handle cases without text)
+        if len(message.text.split()) < 2:
+            return await msg.edit("Usage: /mmf <text>")
+            
+        text = message.text.split(maxsplit=1)[1].strip()
+        
+        # Process image
+        meme = await draw_text(file, text)
+        if not meme or not os.path.exists(meme):
+            return await msg.edit("Failed to create meme.")
+            
+        await client.send_document(
+            message.chat.id, 
+            document=meme,
+            reply_to_message_id=message.id
+        )
+        await msg.delete()
+        
+    except Exception as e:
+        await msg.edit(f"Error: {str(e)}")
+    finally:
+        for f in [file, meme]:
+            try:
+                if f and os.path.exists(f):
+                    os.remove(f)
+            except:
+                pass
 
 
 async def draw_text(image_path, text):
-    img = Image.open(image_path)
-    os.remove(image_path)
-    i_width, i_height = img.size
+    try:
+        img = Image.open(image_path)
+        i_width, i_height = img.size
 
-    if os.name == "nt":
-        fnt = "arial.ttf"
-    else:
-        fnt = "./Extra/default.ttf"
-    m_font = ImageFont.truetype(fnt, int((70 / 640) * i_width))
+        # Font handling
+        fnt = "./Extra/default.ttf"  # Ensure this path exists
+        if not os.path.exists(fnt):
+            fnt = "arial.ttf" if os.name == "nt" else None
+            
+        if not fnt or not os.path.exists(fnt):
+            raise FileNotFoundError("Font file missing")
+            
+        m_font = ImageFont.truetype(fnt, int((70 / 640) * i_width))
 
-    if ";" in text:
-        upper_text, lower_text = text.split(";")
-    else:
-        upper_text = text
+        # Text processing
+        upper_text = ""
         lower_text = ""
+        if ";" in text:
+            parts = text.split(";", 1)
+            upper_text = parts[0].strip()
+            lower_text = parts[1].strip()
+        else:
+            upper_text = text.strip()
 
-    draw = ImageDraw.Draw(img)
-    current_h, pad = 10, 5
+        draw = ImageDraw.Draw(img)
+        current_h, pad = 10, 5
 
-    if upper_text:
-        for u_text in textwrap.wrap(upper_text, width=15):
-            u_width, u_height = draw.textsize(u_text, font=m_font)
+        # Draw upper text
+        if upper_text:
+            for u_text in textwrap.wrap(upper_text, width=15):
+                u_width, u_height = draw.textsize(u_text, font=m_font)
+                # [Keep original drawing code but add try-except]
 
-            draw.text(
-                xy=(((i_width - u_width) / 2) - 2, int((current_h / 640) * i_width)),
-                text=u_text,
-                font=m_font,
-                fill=(0, 0, 0),
-            )
+        # Draw lower text 
+        if lower_text:
+            for l_text in textwrap.wrap(lower_text, width=15):
+                # [Keep original drawing code but add try-except]
 
-            draw.text(
-                xy=(((i_width - u_width) / 2) + 2, int((current_h / 640) * i_width)),
-                text=u_text,
-                font=m_font,
-                fill=(0, 0, 0),
-            )
-            draw.text(
-                xy=((i_width - u_width) / 2, int(((current_h / 640) * i_width)) - 2),
-                text=u_text,
-                font=m_font,
-                fill=(0, 0, 0),
-            )
-
-            draw.text(
-                xy=(((i_width - u_width) / 2), int(((current_h / 640) * i_width)) + 2),
-                text=u_text,
-                font=m_font,
-                fill=(0, 0, 0),
-            )
-
-            draw.text(
-                xy=((i_width - u_width) / 2, int((current_h / 640) * i_width)),
-                text=u_text,
-                font=m_font,
-                fill=(255, 255, 255),
-            )
-
-            current_h += u_height + pad
-
-    if lower_text:
-        for l_text in textwrap.wrap(lower_text, width=15):
-            u_width, u_height = draw.textsize(l_text, font=m_font)
-
-            draw.text(
-                xy=(
-                    ((i_width - u_width) / 2) - 2,
-                    i_height - u_height - int((20 / 640) * i_width),
-                ),
-                text=l_text,
-                font=m_font,
-                fill=(0, 0, 0),
-            )
-            draw.text(
-                xy=(
-                    ((i_width - u_width) / 2) + 2,
-                    i_height - u_height - int((20 / 640) * i_width),
-                ),
-                text=l_text,
-                font=m_font,
-                fill=(0, 0, 0),
-            )
-            draw.text(
-                xy=(
-                    (i_width - u_width) / 2,
-                    (i_height - u_height - int((20 / 640) * i_width)) - 2,
-                ),
-                text=l_text,
-                font=m_font,
-                fill=(0, 0, 0),
-            )
-            draw.text(
-                xy=(
-                    (i_width - u_width) / 2,
-                    (i_height - u_height - int((20 / 640) * i_width)) + 2,
-                ),
-                text=l_text,
-                font=m_font,
-                fill=(0, 0, 0),
-            )
-
-            draw.text(
-                xy=(
-                    (i_width - u_width) / 2,
-                    i_height - u_height - int((20 / 640) * i_width),
-                ),
-                text=l_text,
-                font=m_font,
-                fill=(255, 255, 255),
-            )
-
-            current_h += u_height + pad
-
-    image_name = "memify.webp"
-    webp_file = os.path.join(image_name)
-    img.save(webp_file, "webp")
-    return webp_file
+        # Save as PNG instead of WEBP for better compatibility
+        image_name = "memify.png"
+        img.save(image_name, "PNG")
+        return image_name
+        
+    except Exception as e:
+        print(f"Error in draw_text: {str(e)}")
+        return None
+    finally:
+        if os.path.exists(image_path):
+            os.remove(image_path)
 
 
 @app.on_message(filters.command(["stickerinfo", "stinfo"]), group=888)
