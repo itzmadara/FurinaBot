@@ -42,8 +42,7 @@ def get_emoji_regex():
     ]
     # to avoid re.error excluding char that start with '*'
     e_sort = sorted([x for x in e_list if not x.startswith("*")], reverse=True)
-    # Sort emojis by length to make sure multi-character emojis are
-    # matched first
+    # Sort emojis by length to make sure multi-character emojis are matched first
     pattern_ = f"({'|'.join(e_sort)})"
     return re.compile(pattern_)
 
@@ -64,15 +63,15 @@ async def getsticker_(self: Client, ctx: Message, strings):
         return await ctx.reply(strings("no_anim_stick"))
     with tempfile.TemporaryDirectory() as tempdir:
         path = os.path.join(tempdir, "getsticker")
-    sticker_file = await self.download_media(
-        message=ctx.reply_to_message,
-        file_name=f"{path}/{sticker.set_name}.png",
-    )
+        sticker_file = await self.download_media(
+            message=ctx.reply_to_message,
+            file_name=f"{path}/{sticker.set_name}.png",
+        )
     await ctx.reply_to_message.reply_document(
         document=sticker_file,
         caption=f"<b>Emoji:</b> {sticker.emoji}\n"
-        f"<b>Sticker ID:</b> <code>{sticker.file_id}</code>\n\n"
-        f"<b>Send by:</b> @{self.me.username}",
+                f"<b>Sticker ID:</b> <code>{sticker.file_id}</code>\n\n"
+                f"<b>Send by:</b> @{self.me.username}",
     )
     shutil.rmtree(tempdir, ignore_errors=True)
 
@@ -89,7 +88,7 @@ async def _vidstick(_, message):
         await _.send_animation(chat_id, new_file)
         os.remove(new_file)
     else:
-        await message.reply_text("Please reply to a video sticker to upload it's MP4.")
+        await message.reply_text("Please reply to a video sticker to upload its MP4.")
 
 
 @app.on_message(filters.command("getvideo"), group=333)
@@ -103,7 +102,7 @@ async def _vidstick(_, message):
         await _.send_video(chat_id, video=open(new_file, "rb"))
         os.remove(new_file)
     else:
-        await message.reply_text("Please reply to a gif for me to get it's video.")
+        await message.reply_text("Please reply to a GIF for me to get its video.")
 
 
 @app.on_message(filters.command("stickerid", PREFIX_HANDLER) & filters.reply, group=444)
@@ -167,17 +166,14 @@ async def kang_sticker(self: Client, ctx: Message, strings):
             videos = True
         elif reply.document:
             if "image" in reply.document.mime_type:
-                # mime_type: image/webp
                 resize = True
             elif reply.document.mime_type in (
                 enums.MessageMediaType.VIDEO,
                 enums.MessageMediaType.ANIMATION,
             ):
-                # mime_type: application/video
                 videos = True
                 convert = True
             elif "tgsticker" in reply.document.mime_type:
-                # mime_type: application/x-tgsticker
                 animated = True
         elif reply.sticker:
             if not reply.sticker.file_name:
@@ -201,20 +197,17 @@ async def kang_sticker(self: Client, ctx: Message, strings):
             and ctx.command[1].isdigit()
             and int(ctx.command[1]) > 0
         ):
-            # provide pack number to kang in desired pack
             packnum = ctx.command.pop(1)
             packname = (
                 f"{pack_prefix}{packnum}_{ctx.from_user.id}_by_{self.me.username}"
             )
         if len(ctx.command) > 1:
-            # matches all valid emojis in input
             sticker_emoji = (
                 "".join(set(EMOJI_PATTERN.findall("".join(ctx.command[1:]))))
                 or sticker_emoji
             )
         filename = await self.download_media(ctx.reply_to_message)
         if not filename:
-            # Failed to download
             await prog_msg.delete()
             return
     elif ctx.entities and len(ctx.entities) > 1:
@@ -241,7 +234,6 @@ async def kang_sticker(self: Client, ctx: Message, strings):
         except Exception as r_e:
             return await prog_msg.edit(f"{r_e.__class__.__name__} : {r_e}")
         if len(ctx.command) > 2:
-            # m.command[1] is image_url
             if ctx.command[2].isdigit() and int(ctx.command[2]) > 0:
                 packnum = ctx.command.pop(2)
                 packname = f"a{packnum}_{ctx.from_user.id}_by_{self.me.username}"
@@ -251,6 +243,7 @@ async def kang_sticker(self: Client, ctx: Message, strings):
                     or sticker_emoji
                 )
             resize = True
+    ```python
     else:
         return await prog_msg.edit(strings("kang_help"))
     try:
@@ -386,7 +379,6 @@ def resize_image(filename: str) -> str:
     sizenew = (int(im.width * scale), int(im.height * scale))
     im = im.resize(sizenew, Image.NEAREST)
     downpath, f_name = os.path.split(filename)
-    # not hardcoding png_image as "sticker.png"
     png_image = os.path.join(downpath, f"{f_name.split('.', 1)[0]}.png")
     im.save(png_image, "PNG")
     if png_image != filename:
@@ -404,7 +396,7 @@ async def convert_video(filename: str) -> str:
         "-i",
         filename,
         "-t",
-        "00:00:03",
+        "00: 00:03",
         "-vf",
         "fps=30",
         "-c:v",
@@ -508,12 +500,16 @@ async def draw_text(image_path, text):
         if upper_text:
             for u_text in textwrap.wrap(upper_text, width=15):
                 u_width, u_height = draw.textsize(u_text, font=m_font)
-                # [Keep original drawing code but add try-except]
+                draw.text(((i_width - u_width) / 2, current_h), u_text, font=m_font, fill="white")
+                current_h += u_height + pad
 
         # Draw lower text 
         if lower_text:
+            current_h = i_height - 10
             for l_text in textwrap.wrap(lower_text, width=15):
-                # [Keep original drawing code but add try-except]
+                l_width, l_height = draw.textsize(l_text, font=m_font)
+                draw.text(((i_width - l_width) / 2, current_h - l_height), l_text, font=m_font, fill="white")
+                current_h -= l_height + pad
 
         # Save as PNG instead of WEBP for better compatibility
         image_name = "memify.png"
@@ -543,7 +539,7 @@ async def give_st_info(c: app, m: Message):
     elif st_in.is_video:
         st_type = "Video"
     st_to_gib = f"""[Sticker]({m.reply_to_message.link}) info:
-➼ 𝗙𝗜𝗟𝗘 𝗜𝗗 : `{st_in.file_id}`
+➼  𝗙𝗜𝗟𝗘 𝗜𝗗 : `{st_in.file_id}`
 ➼ 𝗙𝗜𝗟𝗘 𝗡𝗔𝗠𝗘 : {st_in.file_name}
 ➼ 𝗙𝗜𝗟𝗘 𝗨𝗡𝗜𝗤𝗨𝗘 𝗜𝗗 : `{st_in.file_unique_id}`
 ➼ 𝗗𝗔𝗧𝗘 𝗔𝗡𝗗 𝗧𝗜𝗠𝗘 𝗢𝗙 𝗦𝗧𝗜𝗖𝗞𝗘𝗥 𝗖𝗥𝗘𝗔𝗧𝗘𝗗 : `{st_in.date}`
@@ -571,9 +567,9 @@ __help__ = """
 
 » /kang (/steal) < emoji >: Reply to a sticker or any supported media.
 
-» /pkang: Reply to a image type sticker to get full pack.
+» /pkang: Reply to an image type sticker to get full pack.
 
-» /stickerinfo (/stinfo) : Reply to any sticker to get it's info.
+» /stickerinfo (/stinfo) : Reply to any sticker to get its info.
 
 » /stickerid Reply to a sticker message to get the sticker ID and emoji.
 
@@ -589,8 +585,8 @@ __help__ = """
 
 » /mmf < your text >: Reply to a normal sticker or a photo or video file to memify it. If you want to right text at bottom use `;right your message`
     ■ For e.g. 
-    ○ /mmf Hello freinds : this will add text to the top
-    ○ /mmf Hello ; freinds : this will add Hello to the top and freinds at the bottom
+    ○ /mmf Hello friends : this will add text to the top
+    ○ /mmf Hello ; friends : this will add Hello to the top and friends at the bottom
     ○ /mmf ; Hello friends : this will add text at the bottom
 
 ➠ *Note*
@@ -598,4 +594,4 @@ __help__ = """
 """
 
 __mod_name__ = "STICKERS"
-# <================================================ END =======================================================>
+# <================================================ END =======================================================> ```python
