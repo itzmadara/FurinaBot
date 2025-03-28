@@ -22,11 +22,7 @@ from pyrogram.raw.types import (
     InputStickerSetItem,
     InputStickerSetShortName,
 )
-from pyrogram.types import InlineKeyboardButton
-from pyrogram.types import InlineKeyboardButton as IKB
-from pyrogram.types import InlineKeyboardMarkup
-from pyrogram.types import InlineKeyboardMarkup as IKM
-from pyrogram.types import Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from Mikobot import MESSAGE_DUMP, app
 from Mikobot.state import state
@@ -40,9 +36,7 @@ def get_emoji_regex():
         for e in dir(emoji)
         if not e.startswith("_")
     ]
-    # to avoid re.error excluding char that start with '*'
     e_sort = sorted([x for x in e_list if not x.startswith("*")], reverse=True)
-    # Sort emojis by length to make sure multi-character emojis are matched first
     pattern_ = f"({'|'.join(e_sort)})"
     return re.compile(pattern_)
 
@@ -98,7 +92,6 @@ async def _vidstick(_, message):
     if replied and replied.animation:
         file_id = replied.animation.file_id
         new_file = await _.download_media(file_id, file_name="video.mp4")
-        print(new_file)
         await _.send_video(chat_id, video=open(new_file, "rb"))
         os.remove(new_file)
     else:
@@ -192,15 +185,9 @@ async def kang_sticker(self: Client, ctx: Message, strings):
         pack_prefix = "anim" if animated else "vid" if videos else "a"
         packname = f"{pack_prefix}_{ctx.from_user.id}_by_{self.me.username}"
 
-        if (
-            len(ctx.command) > 1
-            and ctx.command[1].isdigit()
-            and int(ctx.command[1]) > 0
-        ):
+        if (len(ctx.command) > 1 and ctx.command[1].isdigit() and int(ctx.command[1]) > 0):
             packnum = ctx.command.pop(1)
-            packname = (
-                f"{pack_prefix}{packnum}_{ctx.from_user.id}_by_{self.me.username}"
-            )
+            packname = f"{pack_prefix}{packnum}_{ctx.from_user.id}_by_{self.me.username}"
         if len(ctx.command) > 1:
             sticker_emoji = (
                 "".join(set(EMOJI_PATTERN.findall("".join(ctx.command[1:]))))
@@ -215,11 +202,7 @@ async def kang_sticker(self: Client, ctx: Message, strings):
         filename = "sticker.png"
         packname = f"c{ctx.from_user.id}_by_{self.me.username}"
         img_url = next(
-            (
-                ctx.text[y.offset : (y.offset + y.length)]
-                for y in ctx.entities
-                if y.type == "url"
-            ),
+            (ctx.text[y.offset : (y.offset + y.length)] for y in ctx.entities if y.type == "url"),
             None,
         )
 
@@ -243,7 +226,6 @@ async def kang_sticker(self: Client, ctx: Message, strings):
                     or sticker_emoji
                 )
             resize = True
-    ```python
     else:
         return await prog_msg.edit(strings("kang_help"))
     try:
@@ -332,13 +314,9 @@ async def kang_sticker(self: Client, ctx: Message, strings):
                 return await prog_msg.edit(
                     strings("please_start_msg"),
                     reply_markup=InlineKeyboardMarkup(
-                        [
-                            [
-                                InlineKeyboardButton(
-                                    strings("click_me"),
-                                    url=f"https://t.me/{self.me.username}?start",
-                                )
-                            ]
+                        [[InlineKeyboardButton(
+                            strings("click_me"),
+                            url=f"https://t.me/{self.me.username}?start")]
                         ]
                     ),
                 )
@@ -349,23 +327,16 @@ async def kang_sticker(self: Client, ctx: Message, strings):
         await prog_msg.edit(f"{all_e.__class__.__name__} : {all_e}")
     else:
         markup = InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        text=strings("viewpack"),
-                        url=f"https://t.me/addstickers/{packname}",
-                    )
-                ]
+            [[InlineKeyboardButton(
+                text=strings("viewpack"),
+                url=f"https://t.me/addstickers/{packname}")]
             ]
         )
         await prog_msg.edit(
             strings("kang_success").format(emot=sticker_emoji),
             reply_markup=markup,
         )
-        # Cleanup
-        await self.delete_messages(
-            chat_id=MESSAGE_DUMP, message_ids=msg_.id, revoke=True
-        )
+        await self.delete_messages(chat_id=MESSAGE_DUMP, message_ids=msg_.id, revoke=True)
         try:
             os.remove(filename)
         except OSError:
@@ -396,12 +367,12 @@ async def convert_video(filename: str) -> str:
         "-i",
         filename,
         "-t",
-        "00: 00:03",
+        "00:00:03",
         "-vf",
         "fps=30",
         "-c:v",
         "vp9",
-        "-b:v:",
+        "-b:v",
         "500k",
         "-preset",
         "ultrafast",
@@ -413,9 +384,7 @@ async def convert_video(filename: str) -> str:
     ]
 
     proc = await asyncio.create_subprocess_exec(*cmd)
-    # Wait for the subprocess to finish
     await proc.communicate()
-
     if webm_video != filename:
         os.remove(filename)
     return webm_video
@@ -439,13 +408,11 @@ async def handler(client, message):
             
         msg = await message.reply("Memifying this image! Please wait.")
         
-        # Extract text properly (handle cases without text)
         if len(message.text.split()) < 2:
             return await msg.edit("Usage: /mmf <text>")
             
         text = message.text.split(maxsplit=1)[1].strip()
         
-        # Process image
         meme = await draw_text(file, text)
         if not meme or not os.path.exists(meme):
             return await msg.edit("Failed to create meme.")
@@ -473,8 +440,7 @@ async def draw_text(image_path, text):
         img = Image.open(image_path)
         i_width, i_height = img.size
 
-        # Font handling
-        fnt = "./Extra/default.ttf"  # Ensure this path exists
+        fnt = "./Extra/default.ttf"
         if not os.path.exists(fnt):
             fnt = "arial.ttf" if os.name == "nt" else None
             
@@ -483,7 +449,6 @@ async def draw_text(image_path, text):
             
         m_font = ImageFont.truetype(fnt, int((70 / 640) * i_width))
 
-        # Text processing
         upper_text = ""
         lower_text = ""
         if ";" in text:
@@ -496,22 +461,19 @@ async def draw_text(image_path, text):
         draw = ImageDraw.Draw(img)
         current_h, pad = 10, 5
 
-        # Draw upper text
         if upper_text:
             for u_text in textwrap.wrap(upper_text, width=15):
                 u_width, u_height = draw.textsize(u_text, font=m_font)
-                draw.text(((i_width - u_width) / 2, current_h), u_text, font=m_font, fill="white")
+                draw.text(((i_width - u_width) // 2, current_h), u_text, font=m_font, fill="white")
                 current_h += u_height + pad
 
-        # Draw lower text 
         if lower_text:
             current_h = i_height - 10
             for l_text in textwrap.wrap(lower_text, width=15):
                 l_width, l_height = draw.textsize(l_text, font=m_font)
-                draw.text(((i_width - l_width) / 2, current_h - l_height), l_text, font=m_font, fill="white")
+                draw.text(((i_width - l_width) // 2, current_h - l_height), l_text, font=m_font, fill="white")
                 current_h -= l_height + pad
 
-        # Save as PNG instead of WEBP for better compatibility
         image_name = "memify.png"
         img.save(image_name, "PNG")
         return image_name
@@ -522,7 +484,6 @@ async def draw_text(image_path, text):
     finally:
         if os.path.exists(image_path):
             os.remove(image_path)
-
 
 @app.on_message(filters.command(["stickerinfo", "stinfo"]), group=888)
 async def give_st_info(c: app, m: Message):
