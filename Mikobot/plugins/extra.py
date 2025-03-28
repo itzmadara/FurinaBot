@@ -60,7 +60,7 @@ async def _id(client, message):
 
     # Send sticker and text as a reply
     sticker_id = (
-        "CAACAgQAAxkBAAJG6mfkHbikpKfugKBATMrtRuODlQxtAAJnFgACK5EhUxPddeZWuqZkHgQ"
+        "CAACAgUAAxkBAAImWWeRXRJ1otRBiECNBhwJn9yN4hatAALvFgACZFKJVDAz31EuKqTzHgQ"
     )
     await message.reply_sticker(sticker=sticker_id)
     await message.reply_text(text, disable_web_page_preview=True)
@@ -106,7 +106,7 @@ async def ping(_, m: Message):
     delta_ping = time() - start
 
     up = strftime("%Hh %Mm %Ss", gmtime(time() - UPTIME))
-    image_url = "https://telegra.ph/file/fddaf2e600b5d35213111-b9f992bf8897c42f27.jpg"
+    image_url = "https://envs.sh/Br6.jpg"
 
     # Send the image as a reply
     await replymsg.reply_photo(
