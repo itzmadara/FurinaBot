@@ -402,7 +402,7 @@ async def handler(client, message):
         return
 
     file = None
-    meme = None
+    sticker = None
     msg = None
     
     try:
@@ -417,13 +417,15 @@ async def handler(client, message):
             
         text = message.text.split(maxsplit=1)[1].strip()
         
-        meme = await draw_text(file, text)
-        if not meme or not os.path.exists(meme):
-            return await msg.edit("Failed to create meme.")
+        # Create WEBP sticker instead of PNG
+        sticker = await create_memified_sticker(file, text)
+        if not sticker or not os.path.exists(sticker):
+            return await msg.edit("Failed to create sticker.")
             
-        await client.send_document(
-            message.chat.id, 
-            document=meme,
+        # Send as sticker instead of document
+        await client.send_sticker(
+            chat_id=message.chat.id,
+            sticker=sticker,
             reply_to_message_id=message.id
         )
         await msg.delete()
@@ -434,14 +436,68 @@ async def handler(client, message):
         else:
             await message.reply(f"Error: {str(e)}")
     finally:
-        # Clean up files if they exist
-        for f in [f for f in [file, meme] if f is not None]:
+        # Clean up files
+        for f in [f for f in [file, sticker] if f is not None]:
             try:
                 if os.path.exists(f):
                     os.remove(f)
             except Exception as e:
                 print(f"Error deleting file {f}: {e}")
 
+async def create_memified_sticker(image_path, text):
+    try:
+        img = Image.open(image_path)
+        i_width, i_height = img.size
+
+        # Font handling
+        fnt = "./Extra/default.ttf"
+        if not os.path.exists(fnt):
+            fnt = "arial.ttf" if os.name == "nt" else None
+            
+        if not fnt or not os.path.exists(fnt):
+            raise FileNotFoundError("Font file missing")
+            
+        m_font = ImageFont.truetype(fnt, int((70 / 640) * i_width))
+
+        # Text processing
+        upper_text = ""
+        lower_text = ""
+        if ";" in text:
+            parts = text.split(";", 1)
+            upper_text = parts[0].strip()
+            lower_text = parts[1].strip()
+        else:
+            upper_text = text.strip()
+
+        draw = ImageDraw.Draw(img)
+        current_h, pad = 10, 5
+
+        # Draw upper text
+        if upper_text:
+            for u_text in textwrap.wrap(upper_text, width=15):
+                u_width, u_height = draw.textsize(u_text, font=m_font)
+                draw.text(((i_width - u_width) // 2, current_h), u_text, font=m_font, fill="white")
+                current_h += u_height + pad
+
+        # Draw lower text
+        if lower_text:
+            current_h = i_height - 10
+            for l_text in textwrap.wrap(lower_text, width=15):
+                l_width, l_height = draw.textsize(l_text, font=m_font)
+                draw.text(((i_width - l_width) // 2, current_h - l_height), l_text, font=m_font, fill="white")
+                current_h -= l_height + pad
+
+        # Save as WEBP for stickers
+        sticker_name = "memify.webp"
+        img.save(sticker_name, "WEBP", quality=95)
+        return sticker_name
+        
+    except Exception as e:
+        print(f"Error in create_memified_sticker: {str(e)}")
+        return None
+    finally:
+        if os.path.exists(image_path):
+            os.remove(image_path)
 
 async def draw_text(image_path, text):
     try:
