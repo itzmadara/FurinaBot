@@ -61,7 +61,6 @@ pyrate-limiter==3.7.0
 pytz==2025.2
 python-arq==6.0.7
 pyrogram==2.0.106
-pyrofork==2.3.59
 python-telegram-bot==22.0
 
 # ==== R ====
